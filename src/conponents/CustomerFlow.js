@@ -5,26 +5,46 @@ import ReactFlow, {
   Controls,
   Background,
 } from "reactflow";
+import { SmartBezierEdge } from "@tisoap/react-flow-smart-edge";
 import "reactflow/dist/style.css";
 import startActivities from "../data/start_activities.json";
 import endActivities from "../data/end_activities.json";
 import dfg from "../data/dfg.json";
 
+const edgeTypes = {
+  smart: SmartBezierEdge,
+};
+
 const startNodes = {
   id: "1",
   position: { x: 600, y: 0 },
   data: { label: "Input" },
-  style: {"background-color": "red", "color": "white", "width": "100px", "height": "100px", "border-radius": "50%", "text-align": "center"}
+  style: {
+    "background-color": "red",
+    color: "white",
+    width: "100px",
+    height: "100px",
+    "border-radius": "50%",
+    "text-align": "center",
+  },
 };
 
 const endNodes = {
   id: "2",
   position: { x: 600, y: 300 },
   data: { label: "Output" },
-  style: {"background-color": "red", "color": "white", "width": "100px", "height": "100px", "border-radius": "50%", "text-align": "center"}
+  style: {
+    "background-color": "red",
+    color: "white",
+    width: "100px",
+    height: "100px",
+    "border-radius": "50%",
+    "text-align": "center",
+  },
 };
 
-function CustomerFlow() {
+function CustomerFlow(props) {
+  const { children, ...rest } = props;
   const initialNodes = Object.keys(startActivities).map((key, index) => {
     return {
       id: `${key}`,
@@ -43,11 +63,12 @@ function CustomerFlow() {
       target: key,
       sourceHandle: "a",
       label: value,
-      markerEnd:{
-        color:'#FF0072',
-        width:25, height:25,
-        type:'arrowclosed',
-        strokeWidth:1
+      markerEnd: {
+        color: "#FF0072",
+        width: 25,
+        height: 25,
+        type: "arrowclosed",
+        strokeWidth: 1,
       },
     };
   });
@@ -59,29 +80,34 @@ function CustomerFlow() {
       target: "2",
       sourceHandle: "b",
       label: value,
-      markerEnd:{
-        color:'#FF0072',
-        width:25, height:25,
-        type:'arrowclosed',
-        strokeWidth:1
+      markerEnd: {
+        color: "#FF0072",
+        width: 25,
+        height: 25,
+        type: "arrowclosed",
+        strokeWidth: 1,
       },
     };
   });
 
   const dfgEdges = dfg.map(({ value, from, to }) => {
-    return {
+    let peuImporte = {
       id: `${from} - ${to}`,
       source: from,
       target: to,
       sourceHandle: "c",
       label: value,
-      markerEnd:{
-        color:'#FF0072',
-        width:25, height:25,
-        type:'arrowclosed',
-        strokeWidth:1
+      markerEnd: {
+        color: "#FF0072",
+        width: 25,
+        height: 25,
+        type: "arrowclosed",
+        strokeWidth: 1,
       },
+      type: "smart",
     };
+
+    return peuImporte;
   });
 
   const [nodes, setNodes] = useState([
@@ -107,10 +133,13 @@ function CustomerFlow() {
     <div style={{ height: "100vh" }}>
       <h1>Demo Flow</h1>
       <ReactFlow
-        nodes={nodes}
         onNodesChange={onNodesChange}
-        edges={edges}
-        onEdgesChange={onEdgesChange}>
+        onEdgesChange={onEdgesChange}
+        edgeTypes={edgeTypes}
+        defaultNodes={nodes}
+        defaultEdges={edges}
+        {...rest}>
+        {children}
         <Background />
         <Controls />
       </ReactFlow>
