@@ -4,7 +4,9 @@ import ReactFlow, {
   applyNodeChanges,
   Controls,
   Background,
+  ReactFlowProvider,
 } from "reactflow";
+import Zoom from "./Zoom";
 import { SmartBezierEdge } from "@tisoap/react-flow-smart-edge";
 import "reactflow/dist/style.css";
 import startActivities from "../brief/start_activities.json";
@@ -13,6 +15,15 @@ import dfg from "../brief/dfg.json";
 
 const edgeTypes = {
   smart: SmartBezierEdge,
+};
+
+const calculSum = (edges, node) => {
+  const edgesArray = [...Array.from(edges)];
+
+  const somme = edgesArray.map(({ id, target, label }) => {
+    return target === node ? label : null;
+  });
+  return somme.reduce((sum, current) => sum + current, 0);
 };
 
 const startNodes = {
@@ -45,16 +56,7 @@ const endNodes = {
 
 function BriefFlow(props) {
   const { children, ...rest } = props;
-  const initialNodes = Object.keys(startActivities).map((key, index) => {
-    return {
-      id: `${key}`,
-      position: {
-        x: 25 * Math.floor(Math.random() * `${index}` + 1),
-        y: 15 * Math.floor(Math.random() * `${index}` + 1),
-      },
-      data: { label: key },
-    };
-  });
+  const [focusNode, setFocusNode] = useState(null);
 
   const initialEdges = Object.keys(startActivities).map((key, value) => {
     return {
@@ -110,16 +112,29 @@ function BriefFlow(props) {
     return peuImporte;
   });
 
-  const [nodes, setNodes] = useState([
-    ...initialNodes,
-    { ...startNodes },
-    { ...endNodes },
-  ]);
   const [edges, setEdges] = useState([
     ...initialEdges,
     ...endEdges,
     ...dfgEdges,
   ]);
+
+  const initialNodes = Object.keys(startActivities).map((key, index) => {
+    return {
+      id: `${key}`,
+      position: {
+        x: 25 * Math.floor(Math.random() * `${index}` + 1),
+        y: 15 * Math.floor(Math.random() * `${index}` + 1),
+      },
+      data: { label: `${key} ${calculSum(edges, key)}` },
+    };
+  });
+  const [nodes, setNodes] = useState([
+    ...initialNodes,
+    { ...startNodes },
+    { ...endNodes },
+  ]);
+
+  console.log(edges);
 
   const onNodesChange = useCallback(
     (changes) => setNodes((nodes) => applyNodeChanges(changes, nodes)),
@@ -129,21 +144,28 @@ function BriefFlow(props) {
     (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
     []
   );
+  const handleNodeClick = (event, node) => {
+    setFocusNode(node);
+  };
   return (
-    <div style={{ height: "95vh", overflow: "hidden" }}>
-      <h1>Vodacom Visualization Dataset</h1>
-      <ReactFlow
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        edgeTypes={edgeTypes}
-        defaultNodes={nodes}
-        defaultEdges={edges}
-        {...rest}
-      >
-        {children}
-        <Background />
-        <Controls />
-      </ReactFlow>
+    <div style={{ height: "95vh", overflow: "hidden" }} className="zoompanflow">
+      <ReactFlowProvider>
+        <div className="reactflow-wrapper">
+          <ReactFlow
+            onNodeClick={handleNodeClick}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            edgeTypes={edgeTypes}
+            defaultNodes={nodes}
+            defaultEdges={edges}
+            {...rest}>
+            {children}
+            <Background />
+            <Controls />
+          </ReactFlow>
+        </div>
+        <Zoom node={focusNode} />
+      </ReactFlowProvider>
     </div>
   );
 }
