@@ -4,26 +4,22 @@ import ReactFlow, {
   applyNodeChanges,
   Controls,
   Background,
-  ReactFlowProvider,
+  useReactFlow,
 } from "reactflow";
-import Zoom from "./Zoom";
 import { SmartBezierEdge } from "@tisoap/react-flow-smart-edge";
 import "reactflow/dist/style.css";
 import startActivities from "../data/start_activities.json";
 import endActivities from "../data/end_activities.json";
 import dfg from "../data/dfg.json";
 
-const calculSum = (edges , node)=>{
+const calculSum = (edges, node) => {
+  const edgesArray = [...Array.from(edges)];
 
-  const edgesArray = [...Array.from(edges)]
-
-  const somme = edgesArray.map(({target, label})=>{
-    return target === node ? label : 0
-
-  })
-  return somme.reduce((sum, current)=>sum+current, 0)
- 
-}
+  const somme = edgesArray.map(({ target, label }) => {
+    return target === node ? label : 0;
+  });
+  return somme.reduce((sum, current) => sum + current, 0);
+};
 
 const edgeTypes = {
   smart: SmartBezierEdge,
@@ -59,7 +55,7 @@ const endNodes = {
 
 function CustomFlow(props) {
   const { children, ...rest } = props;
-  const [focusNode, setFocusNode] = useState(null);
+  const { setCenter } = useReactFlow();
 
   const initialEdges = Object.keys(startActivities).map((key, value) => {
     return {
@@ -148,28 +144,29 @@ function CustomFlow(props) {
   );
 
   const handleNodeClick = (event, node) => {
-    setFocusNode(node);
+    const x = node.position.x + node.width / 2;
+    const y = node.position.y + node.height / 2;
+    const zoom = 1.85;
+
+    setCenter(x, y, { zoom, duration: 1000 });
   };
 
   return (
     <div style={{ height: "95vh", overflow: "hidden" }} className="zoompanflow">
-      <ReactFlowProvider>
-        <div className="reactflow-wrapper">
-          <ReactFlow
-            onNodeClick={handleNodeClick}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            edgeTypes={edgeTypes}
-            defaultNodes={nodes}
-            defaultEdges={edges}
-            {...rest}>
-            {children}
-            <Background />
-            <Controls />
-          </ReactFlow>
-        </div>
-        <Zoom node={focusNode} />
-      </ReactFlowProvider>
+      <div className="reactflow-wrapper">
+        <ReactFlow
+          onNodeClick={handleNodeClick}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          edgeTypes={edgeTypes}
+          defaultNodes={nodes}
+          defaultEdges={edges}
+          {...rest}>
+          {children}
+          <Background />
+          <Controls />
+        </ReactFlow>
+      </div>
     </div>
   );
 }
