@@ -1,0 +1,22 @@
+[
+  {
+    "from": "MVA_Error_Transaction",
+    "to": "MVA_Error_Transaction",
+    "value": 13774
+  },
+  { "from": "MVA_Error_Transaction", "to": "TICKET_In_SLA", "value": 1277 },
+  { "from": "MVA_Error_Transaction", "to": "TICKET_Out_of_SLA", "value": 342 },
+  { "from": "MVA_Error_Transaction", "to": "VISIT_VODASHOP", "value": 2360 },
+  { "from": "TICKET_In_SLA", "to": "MVA_Error_Transaction", "value": 1176 },
+  { "from": "TICKET_In_SLA", "to": "TICKET_In_SLA", "value": 3331 },
+  { "from": "TICKET_In_SLA", "to": "TICKET_Out_of_SLA", "value": 662 },
+  { "from": "TICKET_In_SLA", "to": "VISIT_VODASHOP", "value": 2730 },
+  { "from": "TICKET_Out_of_SLA", "to": "MVA_Error_Transaction", "value": 381 },
+  { "from": "TICKET_Out_of_SLA", "to": "TICKET_In_SLA", "value": 648 },
+  { "from": "TICKET_Out_of_SLA", "to": "TICKET_Out_of_SLA", "value": 258 },
+  { "from": "TICKET_Out_of_SLA", "to": "VISIT_VODASHOP", "value": 685 },
+  { "from": "VISIT_VODASHOP", "to": "MVA_Error_Transaction", "value": 2413 },
+  { "from": "VISIT_VODASHOP", "to": "TICKET_In_SLA", "value": 2656 },
+  { "from": "VISIT_VODASHOP", "to": "TICKET_Out_of_SLA", "value": 702 },
+  { "from": "VISIT_VODASHOP", "to": "VISIT_VODASHOP", "value": 20559 }
+]
