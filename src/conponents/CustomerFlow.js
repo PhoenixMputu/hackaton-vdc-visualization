@@ -130,7 +130,7 @@ function CustomerFlow(props) {
     []
   );
   return (
-    <div style={{ height: "95vh", overview: "hidden" }}>
+    <div style={{ height: "80vh", overview: "hidden" }}>
       <h1>Vodacom Visualization Dataset</h1>
       <ReactFlow
         onNodesChange={onNodesChange}
