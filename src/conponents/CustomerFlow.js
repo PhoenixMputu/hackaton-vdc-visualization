@@ -131,7 +131,7 @@ function CustomerFlow(props) {
   );
   return (
     <div style={{ height: "100vh" }}>
-      <h1>Demo Flow</h1>
+      <h1>Vodacom Visualization Dataset</h1>
       <ReactFlow
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
